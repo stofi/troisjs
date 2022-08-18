@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+
+import Home from '../views/HomePage.vue'
 
 const configureRouter = () => {
   const router = createRouter({
@@ -10,8 +11,14 @@ const configureRouter = () => {
         name: 'Home',
         component: Home,
       },
+      {
+        path: '/sphere',
+        name: 'Sphere',
+        component: () => import('../views/SpherePage.vue'),
+      }
     ],
   })
+
   return router
 }
 

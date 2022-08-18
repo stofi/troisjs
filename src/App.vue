@@ -1,20 +1,18 @@
 <template>
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite + Tailwind + Vue-Router" />
-  <router-view />
+  <TroisRenderer>
+    <TroisCamera></TroisCamera>
+    <TroisScene>
+      <router-view />
+    </TroisScene>
+  </TroisRenderer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts" setup>
+import TroisCamera from './components/Trois/TroisCamera.vue';
+import TroisRenderer from './components/Trois/TroisRenderer.vue';
+import TroisScene from './components/Trois/TroisScene.vue';
 import useDarkmode from './use/Darkmode'
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld,
-  },
-  setup() {
-    useDarkmode()
-  },
-})
+useDarkmode()
+
 </script>
