@@ -2,22 +2,26 @@
 module.exports = {
   root: true,
   env: {
-    es6: true,
     browser: true,
+    node: true,
+    es2021: true,
+    'vue/setup-compiler-macros': true,
   },
-  // parser: '@typescript-eslint/parser',
   extends: [
-    'plugin:vue/vue3-recommended',
     'eslint:recommended',
     '@vue/typescript/recommended',
+    'plugin:vue/vue3-recommended',
+    '@vue/prettier',
     'prettier',
-    // '@vue/prettier/@typescript-eslint',
   ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    ecmaVersion: 2022,
+    parser: '@typescript-eslint/parser',
+    ecmaVersion: 2020,
     sourceType: 'module',
   },
   plugins: ['simple-import-sort', 'import', 'vue', 'prettier'],
+
   rules: {
     'prettier/prettier': ['error'],
     'padding-line-between-statements': 'off',
@@ -210,15 +214,4 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
   },
-  overrides: [
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
-      env: {
-        jest: true,
-      },
-    },
-  ],
 }

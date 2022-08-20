@@ -15,7 +15,7 @@ const configureRouter = () => {
         path: '/sphere',
         name: 'Sphere',
         component: () => import('../views/SpherePage.vue'),
-      }
+      },
     ],
   })
 
