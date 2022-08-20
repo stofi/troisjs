@@ -16,6 +16,6 @@ onMounted(() => {
   camera.near = 1e-6
   camera.far = 1e27
   camera.fov = 1.2
-  camera.fov *= 1
+  camera.fov *= 2
 })
 </script>
