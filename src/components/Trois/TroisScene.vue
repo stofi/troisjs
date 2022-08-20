@@ -2,7 +2,7 @@
   <Scene ref="sceneRef">
     <DirectionalLight :target="target" />
     <slot />
-    <Points ref="pointsRef">
+    <Points ref="pointsRef" :rotation="target2">
       <PointsMaterial
         :props="{
           size: 3,
@@ -84,8 +84,11 @@ const sceneRef = ref<ComponentPublicInstance<typeof Scene>>()
 let timer: ReturnType<typeof setInterval>
 
 const target = ref<Vector3>(new Vector3(0, 0, -1))
+const target2 = ref<Vector3>(new Vector3(1, 0, 0))
 let angle = 0
+let angle2 = 0
 const increment = -0.005
+const increment2 = -0.0001
 
 const pointsRef = ref<ComponentPublicInstance<typeof Points>>()
 
@@ -127,7 +130,6 @@ onMounted(() => {
     const count = stars.length
     const positions = new Float32Array(count * 3)
     const colors = new Float32Array(count * 3)
-    const sizes = new Float32Array(count)
 
     for (let i = 0; i < count; i++) {
       const star = stars[i]
@@ -179,13 +181,16 @@ onMounted(() => {
   ])
   texture.magFilter = LinearFilter
   texture.minFilter = NearestFilter
-  const scene = sceneComponent.scene
+  // const scene = sceneComponent.scene
   // scene.background = texture
 
   timer = setInterval(() => {
     angle += increment
     angle = angle % (Math.PI * 2)
     target.value.set(Math.sin(angle), 0, Math.cos(angle))
+    angle2 += increment2
+    angle2 = angle2 % (Math.PI * 2)
+    target2.value.set(Math.cos(angle2), 0.2, Math.sin(angle2))
   }, 16)
 })
 
