@@ -24,6 +24,8 @@
         :composer="composer"
         :renderer="renderer"
       />
+      <UnrealBloomPass :strength="1" />
+      <FilmPass :noise-intensity="0.3" />
     </EffectComposer>
   </Renderer>
 </template>
@@ -34,7 +36,13 @@ import { ComponentPublicInstance, onMounted, ref } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as EC from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { EffectComposer, Renderer, RenderPass } from 'troisjs'
+import {
+  EffectComposer,
+  FilmPass,
+  Renderer,
+  RenderPass,
+  UnrealBloomPass,
+} from 'troisjs'
 
 import SkyPass from '../Effects/SkyPass'
 
@@ -56,12 +64,12 @@ onMounted(() => {
   camera.value = rendererComponent.three.camera as THREE.PerspectiveCamera
   composer.value = rendererComponent.three.composer as EC.EffectComposer
 
-  const offset = Math.PI / 360
+  // const offset = Math.PI / 360
 
-  controls.value.maxPolarAngle = Math.PI / 2 + offset
-  controls.value.minPolarAngle = Math.PI / 2 - offset
-  controls.value.minAzimuthAngle = 2 * Math.PI - offset
-  controls.value.maxAzimuthAngle = 2 * Math.PI + offset
+  // controls.value.maxPolarAngle = Math.PI / 2 + offset
+  // controls.value.minPolarAngle = Math.PI / 2 - offset
+  // controls.value.minAzimuthAngle = 2 * Math.PI - offset
+  // controls.value.maxAzimuthAngle = 2 * Math.PI + offset
 
   rendererComponent.onBeforeRender(() => {
     if (!skyPassRef.value) return
