@@ -38,46 +38,8 @@ import {
   Texture,
 } from 'troisjs'
 
-import stars from '../../stars.json'
-
-const rightAscentionToAngle = (rightAscention: string) => {
-  const [hours, minutes, seconds] = rightAscention
-    .split(' ')
-    .map((part) => parseFloat(part.replace(/[^0-9.]/g, '')))
-
-  const angle = ((hours + minutes / 60 + seconds / 3600) * Math.PI) / 12
-
-  // output is in the range of 0 to 2π
-  return angle
-}
-
-const declinationToAngle = (declination: string) => {
-  const [degrees, minutes, seconds] = declination
-    .split(' ')
-    .map((part) => parseFloat(part.replace(/[^0-9.]/g, '')))
-
-  const sign = declination[0] === '-' ? -1 : 1
-
-  const angle =
-    (sign * (Math.abs(degrees) + minutes / 60 + seconds / 3600) * Math.PI) / 180
-
-  return angle
-}
-
-const sphericalToCartesian = (
-  radius: number,
-  ascention: number,
-  declination: number
-) => {
-  // spherical to cartesian XYZ Y is up
-  const x = radius * Math.cos(ascention) * Math.cos(declination)
-  const y = radius * Math.sin(ascention) * Math.cos(declination)
-  const z = radius * Math.sin(declination)
-
-  return new Vector3(x, z, y)
-}
-
-const loader = new CubeTextureLoader()
+import Stars from '../../Stars'
+import { map } from '../../utils'
 
 const sceneRef = ref<ComponentPublicInstance<typeof Scene>>()
 
@@ -89,32 +51,7 @@ const increment = -0.005
 
 const pointsRef = ref<ComponentPublicInstance<typeof Points>>()
 
-const minV = stars.reduce((min, star) => Math.min(min, parseFloat(star.V)), 0)
-const maxV = stars.reduce((max, star) => Math.max(max, parseFloat(star.V)), 0)
-
-const medianV =
-  stars.reduce((sum, star) => sum + parseFloat(star.V), 0) / stars.length
-console.log(minV, maxV, medianV)
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.max(min, Math.min(max, value))
-
-const map = (
-  value: number,
-  fromMin: number,
-  fromMax: number,
-  toMin: number,
-  toMax: number,
-  clampFlag = true
-) => {
-  const v = ((value - fromMin) * (toMax - toMin)) / (fromMax - fromMin) + toMin
-
-  return clampFlag ? clamp(v, toMin, toMax) : v
-}
-// console.log(map(0, minV, maxV, 0, 1))
-// console.log(map(0, minV, maxV, 0, 1))
-// console.log(map(-1.46, minV, maxV, 0, 1))
-// console.log(map(7.96, minV, maxV, 0, 1))
+const stars = new Stars()
 
 onMounted(() => {
   const sceneComponent = sceneRef.value
@@ -124,30 +61,30 @@ onMounted(() => {
   if (pointsComponent) {
     const particlesGeometry = new BufferGeometry()
 
-    const count = stars.length
+    const count = stars.count
     const positions = new Float32Array(count * 3)
     const colors = new Float32Array(count * 3)
     const sizes = new Float32Array(count)
 
     for (let i = 0; i < count; i++) {
-      const star = stars[i]
+      const star = stars.getStarAt(i)
       const index = i * 3
-      const phi = rightAscentionToAngle(star.RA)
-      const theta = declinationToAngle(star.Dec)
-      const cartesian = sphericalToCartesian(1, phi, theta)
+      // const phi = rightAscentionToAngle(star.RA)
+      // const theta = declinationToAngle(star.Dec)
+      // const cartesian = sphericalToCartesian(1, phi, theta)
 
-      positions[index] = cartesian.x
-      positions[index + 1] = cartesian.y
-      positions[index + 2] = cartesian.z
+      positions[index] = star.cartesian.x
+      positions[index + 1] = star.cartesian.y
+      positions[index + 2] = star.cartesian.z
 
       let value = parseFloat(star.V)
 
-      if (value + 0.5 >= maxV) {
+      if (value + 0.5 >= stars.maxV) {
         colors[index] = 1
         colors[index + 1] = 0
         colors[index + 2] = 0
       } else {
-        value = map(value, minV, maxV, 0, 1)
+        value = map(value, stars.minV, stars.maxV, 0, 1)
         value = 1 - Math.pow(1 - value, 0.4)
         colors[index] = value
         colors[index + 1] = value
@@ -169,16 +106,6 @@ onMounted(() => {
     pointsComponent.setGeometry(particlesGeometry)
   }
 
-  const texture = loader.load([
-    'sky/px.png',
-    'sky/nx.png',
-    'sky/py.png',
-    'sky/ny.png',
-    'sky/pz.png',
-    'sky/nz.png',
-  ])
-  texture.magFilter = LinearFilter
-  texture.minFilter = NearestFilter
   const scene = sceneComponent.scene
   // scene.background = texture
 
