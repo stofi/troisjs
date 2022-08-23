@@ -42,7 +42,6 @@ export default function useRenderer() {
 
     setOnSetFov(() => {
       if (!controls.value) return
-      console.log('setOnSetFov', controls.value)
 
       controls.value.update()
     })

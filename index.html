@@ -6,7 +6,7 @@
     <!-- prevent scroll -->
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no,viewport-fit=cover"
     />
 
     <title>Moon</title>
@@ -24,12 +24,18 @@
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
+      #ui {
+        height: 100vh;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
     </style>
   </head>
   <body class="relative text-white">
     <div id="container">
       <div id="app"></div>
       <div
+        id="ui"
         class="absolute inset-0 grid grid-cols-12 grid-rows-6 pointer-events-none"
       >
         <div
@@ -38,15 +44,15 @@
         ></div>
         <div
           id="teleport-left"
-          class="col-start-1 col-end-4 row-start-2 row-end-6 p-2"
+          class="p-2 col-span-full md:ow-start-2 md:row-end-6 md:col-start-1 md:col-end-4"
         ></div>
         <div
           id="teleport-left"
-          class="col-start-10 col-end-13 row-start-2 row-end-6 p-2"
+          class="p-2 col-span-full md:row-start-2 md:row-end-6 md:col-start-10 md:col-end-13"
         ></div>
         <div
           id="teleport-footer"
-          class="row-start-6 row-end-7 p-2 col-span-full"
+          class="row-start-5 row-end-7 p-2 md:row-start-6 col-span-full"
         ></div>
       </div>
     </div>

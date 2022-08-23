@@ -22,7 +22,7 @@ export default function useScene() {
     const texture = loader.load('/constellation_figures_2k.jpg')
     texture.mapping = THREE.EquirectangularRefractionMapping
 
-    scene.background = texture
+    // scene.background = texture
 
     timer = setInterval(() => {
       angle.value += increment

@@ -1,6 +1,6 @@
 <template>
   <Points ref="pointsRef" :scale="{ x: -1 }" :rotation="{ y: Math.PI }">
-    <PointsMaterial
+    <!-- <PointsMaterial
       :props="{
         size: props.size,
         sizeAttenuation: false,
@@ -10,20 +10,42 @@
       }"
     >
       <Texture src="/circle.png" />
-    </PointsMaterial>
-    <!-- <ShaderMaterial :props="StarShader"></ShaderMaterial> -->
+    </PointsMaterial> -->
+    <ShaderMaterial
+      :props="{
+        ...StarShader,
+        size: props.size,
+        sizeAttenuation: false,
+        vertexColors: true,
+        depthWrite: false,
+        blending: AdditiveBlending,
+      }"
+    ></ShaderMaterial>
   </Points>
 </template>
 
 <script lang="ts" setup>
-import { ComponentPublicInstance, defineProps, onMounted, ref } from 'vue'
+import {
+  ComponentPublicInstance,
+  defineProps,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 
-import { AdditiveBlending, BufferAttribute, BufferGeometry } from 'three'
+import {
+  AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
+  TextureLoader,
+} from 'three'
 import { Points, PointsMaterial, ShaderMaterial, Texture } from 'troisjs'
 
 import StarShader from '@/shaders/StarShader'
 import Stars from '@/Stars'
 import { map } from '@/utils'
+
+const loader = new TextureLoader()
 
 const props = defineProps({
   size: {
@@ -36,7 +58,22 @@ const pointsRef = ref<ComponentPublicInstance<typeof Points>>()
 
 const stars = new Stars()
 
+watch(
+  props,
+  () => {
+    const pointsComponent = pointsRef.value
+
+    if (pointsComponent) {
+      pointsComponent.material.uniforms.uSize.value = props.size
+    }
+  },
+  {
+    immediate: true,
+  }
+)
+
 onMounted(() => {
+  const texture = loader.load('/blackbody_1px.png')
   const pointsComponent = pointsRef.value
 
   if (pointsComponent) {
@@ -44,8 +81,8 @@ onMounted(() => {
 
     const count = stars.count
     const positions = new Float32Array(count * 3)
-    const colors = new Float32Array(count * 3)
-    const sizes = new Float32Array(count)
+    const magnitude = new Float32Array(count)
+    const temperature = new Float32Array(count)
 
     for (let i = 0; i < count; i++) {
       const star = stars.getStarAt(i)
@@ -58,11 +95,12 @@ onMounted(() => {
       let value = parseFloat(star.V)
 
       value = map(value, stars.minV, stars.maxV, 0, 1)
-      sizes[i] = value
-      // value = 1 - Math.pow(1 - value, 0.4)
-      colors[index] = value
-      colors[index + 1] = value
-      colors[index + 2] = value
+      magnitude[i] = value * 0.5 + 0.5
+      let temp = star.K ? parseInt(star.K) : 1000
+
+      temp = map(temp, Stars.minTemperature, Stars.maxTemperature, 0, 1)
+
+      temperature[i] = Math.pow(temp, 1 / 4)
     }
 
     particlesGeometry.setAttribute(
@@ -70,12 +108,31 @@ onMounted(() => {
       new BufferAttribute(positions, 3)
     )
 
-    particlesGeometry.setAttribute('color', new BufferAttribute(colors, 3))
-    particlesGeometry.setAttribute('size', new BufferAttribute(sizes, 1))
+    particlesGeometry.setAttribute(
+      'magnitude',
+      new BufferAttribute(magnitude, 1)
+    )
+
+    particlesGeometry.setAttribute(
+      'temperature',
+      new BufferAttribute(temperature, 1)
+    )
 
     pointsComponent.setGeometry(particlesGeometry)
 
-    console.log(pointsComponent.material)
+    pointsComponent.material.uniforms.tBlackBody.value = texture
+
+    pointsComponent.material.uniforms.uMinTemperature.value =
+      Stars.minTemperature
+
+    pointsComponent.material.uniforms.uMaxTemperature.value =
+      Stars.maxTemperature
+
+    pointsComponent.material.uniforms.uMinValue.value = stars.minV
+
+    pointsComponent.material.uniforms.uMaxValue.value = stars.maxV
+
+    pointsComponent.material.uniforms.uSize.value = props.size
   }
 })
 </script>

@@ -1,15 +1,22 @@
-attribute vec3 color;
-attribute float size;
-varying vec3 vColor;
-varying float vSize;
+attribute float magnitude;
+attribute float alpha;
 
+attribute float temperature;
+
+varying vec3 vColor;
+varying float vMag;
 varying vec2 vUv;
-void main()
-{
-	vColor=vec3(1);// set color associated to vertex; use later in fragment shader
+varying float vAlpha;
+varying float vTemperature;
+uniform float uSize;
+
+void main(){
+	vAlpha=alpha;
+	vMag=magnitude;
+	vColor=color;
+	vUv=uv;
+	vTemperature=temperature;
 	vec4 mvPosition=modelViewMatrix*vec4(position,1.);
-	// gl_PointSize=(size)*(1./length(mvPosition.xyz));
-	vSize=40.;
-	gl_PointSize=vSize;
+	gl_PointSize=uSize;
 	gl_Position=projectionMatrix*mvPosition;
 }

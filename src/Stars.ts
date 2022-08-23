@@ -19,6 +19,9 @@ type StarNamed = StarTransformed & {
 }
 
 export default class Stars {
+  static minTemperature = 1000
+  static maxTemperature = 30000
+
   stars: StarTransformed[] = Stars.getTransformedStars()
   constellations: { [key: string]: StarInConstellation[] } =
     Stars.getConstellations()
