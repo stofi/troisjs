@@ -71,6 +71,8 @@ onMounted(() => {
   // controls.value.minAzimuthAngle = 2 * Math.PI - offset
   // controls.value.maxAzimuthAngle = 2 * Math.PI + offset
 
+  console.log(renderer.value)
+
   rendererComponent.onBeforeRender(() => {
     if (!skyPassRef.value) return
     skyPassRef.value.update()

@@ -3,12 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- prevent scroll -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
     <title>Moon</title>
+
+    <style>
+      body {
+        overflow: hidden;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      #container {
+        height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
   </head>
   <body class="relative text-white">
-    <div id="app"></div>
-    <div id="app-html" class="absolute inset-0 pointer-events-none"></div>
+    <div id="container">
+      <div id="app"></div>
+      <div
+        class="absolute inset-0 grid grid-cols-12 grid-rows-6 pointer-events-none"
+      >
+        <div
+          id="teleport-header"
+          class="row-start-1 row-end-2 p-2 col-span-full"
+        ></div>
+        <div
+          id="teleport-left"
+          class="col-start-1 col-end-4 row-start-2 row-end-6 p-2"
+        ></div>
+        <div
+          id="teleport-left"
+          class="col-start-10 col-end-13 row-start-2 row-end-6 p-2"
+        ></div>
+        <div
+          id="teleport-footer"
+          class="row-start-6 row-end-7 p-2 col-span-full"
+        ></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

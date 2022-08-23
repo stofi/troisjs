@@ -19,7 +19,7 @@
 import { ComponentPublicInstance, defineProps, onMounted, ref } from 'vue'
 
 import { AdditiveBlending, BufferAttribute, BufferGeometry } from 'three'
-import { Points, PointsMaterial, ShaderMaterial } from 'troisjs'
+import { Points, PointsMaterial, ShaderMaterial, Texture } from 'troisjs'
 
 import Stars from '../Stars'
 import { map } from '../utils'
@@ -74,6 +74,8 @@ onMounted(() => {
     particlesGeometry.setAttribute('size', new BufferAttribute(sizes, 1))
 
     pointsComponent.setGeometry(particlesGeometry)
+
+    console.log(pointsComponent.material)
   }
 })
 </script>

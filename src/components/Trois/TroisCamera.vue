@@ -1,11 +1,25 @@
 <template>
   <Camera ref="cameraRef" :position="{ z: 0.001 }" />
-  <Teleport to="#app-html">
+  <Teleport to="#teleport-header">
     <div v-for="text in texts" :key="text">
       {{ text }}
     </div>
     <div class="whitespace-pre-line">
       {{ starsText }}
+    </div>
+  </Teleport>
+  <Teleport to="#teleport-footer">
+    <div class="flex items-end justify-center">
+      <input
+        :value="inputValue"
+        class="pointer-events-auto"
+        type="range"
+        name="focalLength"
+        min="0"
+        max="1"
+        step="0.01"
+        @input="onInput"
+      />
     </div>
   </Teleport>
 </template>
@@ -30,6 +44,19 @@ const focalLength = ref(2200)
 const minFocalLength = ref(1)
 const maxFocalLength = ref(10000)
 
+const onInput = (e: Event) => {
+  const target = e.target as HTMLInputElement
+
+  let value = Number(target.value)
+  inputValue.value = value
+  value = Math.pow(value, 4)
+
+  value =
+    value * (maxFocalLength.value - minFocalLength.value) + minFocalLength.value
+  setFocalLenght(value)
+  setFov()
+}
+
 const fov = computed(() => {
   // const a = window.innerWidth / 2
   const a = 24
@@ -37,6 +64,17 @@ const fov = computed(() => {
 
   return Math.atan(a / b) * (180 / Math.PI)
 })
+
+const focalLengthNormalized = computed(() => {
+  return (
+    (focalLength.value - minFocalLength.value) /
+    (maxFocalLength.value - minFocalLength.value)
+  )
+})
+
+const inputValue = ref(0)
+
+inputValue.value = Math.pow(focalLengthNormalized.value, 1 / 4)
 
 const stars = new Stars()
 

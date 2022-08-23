@@ -10,10 +10,11 @@ void main()
 {
 	
 	vec2 uv=vUv-.5;
+	
 	float mask=abs(length(uv)-1.);
 	float brightness=.5;
 	gl_FragColor=vec4(vColor,1.)*mask*brightness;
-	// gl_FragColor=vec4(vec3(vUv,0.),1.);
+	gl_FragColor=vec4(vec3(vUv,0.),1.);
 	
 }
 

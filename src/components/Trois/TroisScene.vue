@@ -2,7 +2,7 @@
   <Scene ref="sceneRef">
     <DirectionalLight :target="target" :intensity="0.4" />
     <slot />
-    <AppStars :size="3" />
+    <AppStars :size="10" />
   </Scene>
 </template>
 

@@ -1,0 +1,10 @@
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[dev]
+  command = "yarn start"
+  targetPort = 8080
+  publish = "dist"
