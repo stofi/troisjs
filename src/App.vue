@@ -1,17 +1,9 @@
 <template>
-  <TroisRenderer>
-    <TroisCamera />
-    <TroisScene>
-      <router-view />
-    </TroisScene>
-  </TroisRenderer>
+  <AppRenderer>
+    <router-view />
+  </AppRenderer>
 </template>
 
 <script lang="ts" setup>
-import TroisCamera from './components/Trois/TroisCamera.vue'
-import TroisRenderer from './components/Trois/TroisRenderer.vue'
-import TroisScene from './components/Trois/TroisScene.vue'
-import useDarkmode from './use/Darkmode'
-
-useDarkmode()
+import AppRenderer from '@/components/App/AppRenderer.vue'
 </script>

@@ -11,7 +11,7 @@
     >
       <Texture src="/circle.png" />
     </PointsMaterial>
-    <!-- <ShaderMaterial :props="PointsShader"></ShaderMaterial> -->
+    <!-- <ShaderMaterial :props="StarShader"></ShaderMaterial> -->
   </Points>
 </template>
 
@@ -21,9 +21,9 @@ import { ComponentPublicInstance, defineProps, onMounted, ref } from 'vue'
 import { AdditiveBlending, BufferAttribute, BufferGeometry } from 'three'
 import { Points, PointsMaterial, ShaderMaterial, Texture } from 'troisjs'
 
-import Stars from '../Stars'
-import { map } from '../utils'
-import PointsShader from './PointsShader'
+import StarShader from '@/shaders/StarShader'
+import Stars from '@/Stars'
+import { map } from '@/utils'
 
 const props = defineProps({
   size: {
