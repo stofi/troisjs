@@ -83,7 +83,6 @@ const {
   inputValue,
   starsText,
   texts,
-  focalLength,
   // getStars,
 } = useRenderer()
 </script>
