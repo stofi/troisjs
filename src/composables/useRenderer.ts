@@ -8,19 +8,21 @@ import { Renderer, Scene } from 'troisjs'
 import useCamera from '@/composables/useCamera'
 import useScene from '@/composables/useScene'
 
+const renderer = ref<THREE.WebGLRenderer>()
+const controls = ref<OrbitControls>()
+const scene = ref<THREE.Scene>()
+const camera = ref<THREE.PerspectiveCamera>()
+const composer = ref<EC.EffectComposer>()
+
 export default function useRenderer() {
   const rendererRef = ref<ComponentPublicInstance<typeof Renderer>>()
 
   const enableEffect = ref(true)
 
-  const renderer = ref<THREE.WebGLRenderer>()
-  const controls = ref<OrbitControls>()
-  const camera = ref<THREE.PerspectiveCamera>()
-  const composer = ref<EC.EffectComposer>()
-
   const { target, sceneRef } = useScene()
 
   const {
+    setOnSetFov,
     cameraRef,
     onInput,
     inputValue,
@@ -36,7 +38,14 @@ export default function useRenderer() {
     controls.value = rendererComponent.three.cameraCtrl as OrbitControls
     camera.value = rendererComponent.three.camera as THREE.PerspectiveCamera
     composer.value = rendererComponent.three.composer as EC.EffectComposer
+    scene.value = rendererComponent.scene as THREE.Scene
 
+    setOnSetFov(() => {
+      if (!controls.value) return
+      console.log('setOnSetFov', controls.value)
+
+      controls.value.update()
+    })
     // const offset = Math.PI / 360
 
     // controls.value.maxPolarAngle = Math.PI / 2 + offset

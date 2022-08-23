@@ -20,7 +20,8 @@
     <Scene ref="sceneRef">
       <DirectionalLight :target="target" :intensity="0.4" />
       <slot />
-      <AppStars :size="10" />
+
+      <AppStars :size="2" />
     </Scene>
     <EffectComposer v-if="enableEffect">
       <RenderPass />
@@ -82,6 +83,7 @@ const {
   inputValue,
   starsText,
   texts,
+  focalLength,
   // getStars,
 } = useRenderer()
 </script>

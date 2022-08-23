@@ -20,7 +20,6 @@ export default function useScene() {
 
     const scene = sceneComponent.scene
     const texture = loader.load('/constellation_figures_2k.jpg')
-    texture.mapping = THREE.EquirectangularReflectionMapping
     texture.mapping = THREE.EquirectangularRefractionMapping
 
     scene.background = texture

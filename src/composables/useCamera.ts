@@ -32,6 +32,14 @@ export default function useCamera() {
     setFov()
   }
 
+  let onSetFov = () => {
+    //
+  }
+
+  const setOnSetFov = (fn: () => void) => {
+    onSetFov = fn
+  }
+
   const fov = computed(() => {
     // const a = window.innerWidth / 2
     const a = 24
@@ -49,7 +57,10 @@ export default function useCamera() {
 
   const inputValue = ref(0)
 
-  inputValue.value = Math.pow(focalLengthNormalized.value, 1 / 4)
+  const setInput = (value: number) => {
+    inputValue.value = Math.pow(value, 1 / 4)
+  }
+  setInput(focalLengthNormalized.value)
 
   const stars = new Stars()
 
@@ -68,6 +79,8 @@ export default function useCamera() {
     const v = fov.value
     camera.fov = v
     camera.updateProjectionMatrix()
+    setInput(focalLengthNormalized.value)
+    onSetFov()
   }
 
   const setFocalLenght = (value: number) => {
@@ -87,7 +100,7 @@ export default function useCamera() {
       (focalLength.value - minFocalLength.value) /
       (maxFocalLength.value - minFocalLength.value)
 
-    const scale = shift ? 10 : 100
+    const scale = shift ? 50 : 1000
 
     const newValue = focalLength.value + direction * normalizedValue * scale
 
@@ -165,6 +178,7 @@ export default function useCamera() {
     stars,
     starsText,
     texts,
+    setOnSetFov,
     // getStars,
   }
 }
