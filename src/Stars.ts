@@ -34,7 +34,12 @@ export default class Stars {
     return this.stars[index]
   }
 
-  getStarsInRegion(direction: Vector3, vFovDeg: number, hFovDeg: number) {
+  getStarsInRegion(
+    direction: Vector3,
+    vFovDeg: number,
+    hFovDeg: number,
+    named = false
+  ) {
     const spherical = Stars.cartesianToSpherical(direction)
     const hFovRad = (hFovDeg / 360) * 2 * Math.PI
     const vFovRad = (vFovDeg / 360) * 2 * Math.PI
@@ -46,8 +51,9 @@ export default class Stars {
     const minDeclination = spherical.declination - vFovRad / 2
 
     const maxDeclination = spherical.declination + vFovRad / 2
+    const arr = named ? this.namedStars : this.stars
 
-    return this.stars.filter(
+    return arr.filter(
       (star) =>
         (star.phi >= minAscention &&
           star.phi <= maxAscention &&

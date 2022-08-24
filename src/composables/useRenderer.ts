@@ -25,10 +25,10 @@ export default function useRenderer() {
     setOnSetFov,
     cameraRef,
     onInput,
-    inputValue,
+    zoomValue,
     starsText,
     texts,
-    // getStars,
+    getStars,
   } = useCamera()
 
   onMounted(() => {
@@ -66,9 +66,9 @@ export default function useRenderer() {
     target,
     cameraRef,
     onInput,
-    inputValue,
+    zoomValue,
     starsText,
     texts,
-    // getStars,
+    getStars,
   }
 }

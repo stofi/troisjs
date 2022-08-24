@@ -18,11 +18,9 @@ export default function useCamera() {
   const minFocalLength = ref(1)
   const maxFocalLength = ref(10000)
 
-  const onInput = (e: Event) => {
-    const target = e.target as HTMLInputElement
-
-    let value = Number(target.value)
-    inputValue.value = value
+  const onInput = (event: number) => {
+    let value = event
+    zoomValue.value = value
     value = Math.pow(value, 4)
 
     value =
@@ -55,10 +53,10 @@ export default function useCamera() {
     )
   })
 
-  const inputValue = ref(0)
+  const zoomValue = ref(0)
 
   const setInput = (value: number) => {
-    inputValue.value = Math.pow(value, 1 / 4)
+    zoomValue.value = Math.pow(value, 1 / 4)
   }
   setInput(focalLengthNormalized.value)
 
@@ -119,29 +117,33 @@ export default function useCamera() {
 
     return [fl, fovx]
   })
+  const vector = new Vector3(0, 0, -1)
 
-  // const getStars = () => {
-  //   const cameraComponent = cameraRef.value
-  //   if (!cameraComponent) return
-  //   const direction = new Vector3(0, 0, -1)
-  //   const newV = new Vector3(direction.x, direction.y, -direction.z)
+  const getStars = () => {
+    const cameraComponent = cameraRef.value
+    if (!cameraComponent) return
+    const direction = vector
+    const newV = cameraComponent.camera.getWorldDirection(direction)
+    // rotate newv by 90 degrees
+    newV.applyAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2)
 
-  //   const sph = Stars.cartesianToSpherical(newV)
-  //   const h = hFov.value
-  //   const v = fov.value
-  //   const region = stars.getStarsInRegion(direction, v, h)
-  //   const a = sph.ascention * (180 / Math.PI)
-  //   const d = sph.declination * (180 / Math.PI)
-  //   // console.log(region)
+    const sph = Stars.cartesianToSpherical(newV)
+    const h = hFov.value
+    const v = fov.value
+    const region = stars.getStarsInRegion(newV, v, h, true)
+    const a = sph.ascention * (180 / Math.PI) + 90
+    const d = sph.declination * (180 / Math.PI)
+    console.log(h, v, a, d)
+    console.log(region)
 
-  //   starsText.value = region
-  //     .map((star) => {
-  //       const { N, RA, Dec } = star
+    starsText.value = region
+      .map((star) => {
+        const { N, RA, Dec } = star
 
-  //       return `${N} ${RA} ${Dec}`
-  //     })
-  //     .join('\n')
-  // }
+        return `${N} ${RA} ${Dec}`
+      })
+      .join('\n')
+  }
 
   onMounted(() => {
     const cameraComponent = cameraRef.value
@@ -169,7 +171,7 @@ export default function useCamera() {
     onInput,
     fov,
     focalLengthNormalized,
-    inputValue,
+    zoomValue,
     hFov,
     setFov,
     setFocalLenght,
@@ -179,6 +181,6 @@ export default function useCamera() {
     starsText,
     texts,
     setOnSetFov,
-    // getStars,
+    getStars,
   }
 }

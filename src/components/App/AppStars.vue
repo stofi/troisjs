@@ -1,16 +1,5 @@
 <template>
   <Points ref="pointsRef" :scale="{ x: -1 }" :rotation="{ y: Math.PI }">
-    <!-- <PointsMaterial
-      :props="{
-        size: props.size,
-        sizeAttenuation: false,
-        vertexColors: true,
-        depthWrite: false,
-        blending: AdditiveBlending,
-      }"
-    >
-      <Texture src="/circle.png" />
-    </PointsMaterial> -->
     <ShaderMaterial
       :props="{
         ...StarShader,
@@ -22,6 +11,19 @@
       }"
     ></ShaderMaterial>
   </Points>
+  <Sphere
+    ref="constellationRef"
+    :radius="10"
+    :scale="{ x: -1 }"
+    :rotation="{ y: Math.PI }"
+    :width-segments="256"
+    :height-segments="256"
+  >
+    <ShaderMaterial
+      :props="{ ...ConstellationShader, side: 2, transparent: true }"
+    >
+    </ShaderMaterial>
+  </Sphere>
 </template>
 
 <script lang="ts" setup>
@@ -39,8 +41,16 @@ import {
   BufferGeometry,
   TextureLoader,
 } from 'three'
-import { Points, PointsMaterial, ShaderMaterial, Texture } from 'troisjs'
+import {
+  BasicMaterial,
+  Points,
+  PointsMaterial,
+  ShaderMaterial,
+  Sphere,
+  Texture,
+} from 'troisjs'
 
+import ConstellationShader from '@/shaders/ConstellationShader'
 import StarShader from '@/shaders/StarShader'
 import Stars from '@/Stars'
 import { map } from '@/utils'
@@ -52,19 +62,33 @@ const props = defineProps({
     type: Number,
     default: 3,
   },
+  constellationOpacity: {
+    type: Number,
+    default: 0,
+  },
 })
 
 const pointsRef = ref<ComponentPublicInstance<typeof Points>>()
+const constellationRef = ref<ComponentPublicInstance<typeof Sphere>>()
 
 const stars = new Stars()
+
+const blackbodyTexture = loader.load('/blackbody_1px.png')
+const constellationTexture = loader.load('/constellation_figures_4k.png')
 
 watch(
   props,
   () => {
     const pointsComponent = pointsRef.value
+    const constellationComponent = constellationRef.value
 
     if (pointsComponent) {
       pointsComponent.material.uniforms.uSize.value = props.size
+    }
+
+    if (constellationComponent) {
+      constellationComponent.material.uniforms.uOpacity.value =
+        props.constellationOpacity
     }
   },
   {
@@ -73,8 +97,8 @@ watch(
 )
 
 onMounted(() => {
-  const texture = loader.load('/blackbody_1px.png')
   const pointsComponent = pointsRef.value
+  const constellationComponent = constellationRef.value
 
   if (pointsComponent) {
     const particlesGeometry = new BufferGeometry()
@@ -120,7 +144,7 @@ onMounted(() => {
 
     pointsComponent.setGeometry(particlesGeometry)
 
-    pointsComponent.material.uniforms.tBlackBody.value = texture
+    pointsComponent.material.uniforms.tBlackBody.value = blackbodyTexture
 
     pointsComponent.material.uniforms.uMinTemperature.value =
       Stars.minTemperature
@@ -133,6 +157,14 @@ onMounted(() => {
     pointsComponent.material.uniforms.uMaxValue.value = stars.maxV
 
     pointsComponent.material.uniforms.uSize.value = props.size
+  }
+
+  if (constellationComponent) {
+    constellationComponent.material.uniforms.uTexture.value =
+      constellationTexture
+
+    constellationComponent.material.uniforms.uOpacity.value =
+      props.constellationOpacity
   }
 })
 </script>

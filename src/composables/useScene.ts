@@ -1,10 +1,7 @@
 import { ComponentPublicInstance, onBeforeUnmount, onMounted, ref } from 'vue'
 
-import { TextureLoader, Vector3 } from 'three'
-import * as THREE from 'three'
+import { Color, Vector3 } from 'three'
 import { Scene } from 'troisjs'
-
-const loader = new TextureLoader()
 
 export default function useScene() {
   const sceneRef = ref<ComponentPublicInstance<typeof Scene>>()
@@ -19,10 +16,7 @@ export default function useScene() {
     if (!sceneComponent) return
 
     const scene = sceneComponent.scene
-    const texture = loader.load('/constellation_figures_2k.jpg')
-    texture.mapping = THREE.EquirectangularRefractionMapping
-
-    // scene.background = texture
+    scene.background = new Color(0)
 
     timer = setInterval(() => {
       angle.value += increment
