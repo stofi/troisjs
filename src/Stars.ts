@@ -19,7 +19,19 @@ export type StarNamed = StarTransformed & {
   N: string
 }
 
+let instance: Stars
+
 export default class Stars {
+  constructor() {
+    if (instance) {
+      return instance
+    }
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    instance = this
+
+    return instance
+  }
+
   static minTemperature = 1000
   static maxTemperature = 30000
 
@@ -45,54 +57,56 @@ export default class Stars {
     const hFovRad = (hFovDeg / 360) * 2 * Math.PI
     const vFovRad = (vFovDeg / 360) * 2 * Math.PI
 
-    let minAscention = spherical.ascention - hFovRad // / 2
-
-    let maxAscention = spherical.ascention + hFovRad // / 2
-
-    let minDeclination = spherical.declination - vFovRad // / 2
-
-    let maxDeclination = spherical.declination + vFovRad // / 2
-
-    if (minAscention > maxAscention) {
-      minAscention = minAscention - 2 * Math.PI
-      maxAscention = maxAscention - 2 * Math.PI
-    }
-
-    if (minDeclination > maxDeclination) {
-      minDeclination = minDeclination - 2 * Math.PI
-      maxDeclination = maxDeclination - 2 * Math.PI
-    }
-
     const arr = named ? this.namedStars : this.stars
 
-    // console.log({
-    //   hFovRad,
-    //   vFovRad,
-    //   minAscention,
-    //   maxAscention,
-    //   minDeclination,
-    //   maxDeclination,
-    //   _minAscention: Stars.angleToRightAscention(minAscention),
-    //   _maxAscention: Stars.angleToRightAscention(maxAscention),
-    //   _minDeclination: Stars.angleToDeclination(minDeclination),
-    //   _maxDeclination: Stars.angleToDeclination(maxDeclination),
-    // })
+    const radius = hFovRad < vFovRad ? hFovRad : vFovRad
 
     const compare = (star: StarTransformed) =>
-      (star.phi >= minAscention &&
-        star.phi <= maxAscention &&
-        star.theta >= minDeclination &&
-        star.theta <= maxDeclination) ||
-      (star.phi + 2 * Math.PI >= minAscention &&
-        star.phi + 2 * Math.PI <= maxAscention &&
-        star.theta >= minDeclination &&
-        star.theta <= maxDeclination) ||
-      (star.phi - 2 * Math.PI >= minAscention &&
-        star.phi - 2 * Math.PI <= maxAscention &&
-        star.theta >= minDeclination &&
-        star.theta <= maxDeclination)
+      Stars.getArcDistance(
+        { phi: spherical.ascention, theta: spherical.declination },
+        { phi: star.phi, theta: star.theta }
+      ) <= radius
 
     return arr.filter(compare)
+  }
+
+  getClosestStar(point: {
+    phi: number
+    theta: number
+  }): StarTransformed | null {
+    const closest = this.stars.reduce(
+      (acc, star) => {
+        const distance = Stars.getArcDistance(point, star)
+        if (!star.N) return acc
+
+        if (distance < acc.distance) {
+          return {
+            distance,
+            star,
+          }
+        }
+
+        return acc
+      },
+      { distance: Infinity, star: null } as {
+        distance: number
+        star: StarTransformed | null
+      }
+    )
+
+    return closest.star
+  }
+
+  static getArcDistance(
+    a: { phi: number; theta: number },
+    b: { phi: number; theta: number }
+  ): number {
+    const u = Stars.sphericalToCartesian(1, a.phi, a.theta)
+    const v = Stars.sphericalToCartesian(1, b.phi, b.theta)
+    // angle between u and v
+    const angle = Math.acos(u.dot(v) / (u.length() * v.length()))
+
+    return angle
   }
 
   static getStars(): Star[] {
