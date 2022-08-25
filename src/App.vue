@@ -22,7 +22,10 @@
   </Teleport>
   <Teleport to="#teleport-footer">
     <div class="flex flex-col items-center justify-center w-full h-full gap-2">
-      <InputButton text="get stars" @click="store.getStars" />
+      <div class="flex gap-2">
+        <InputButton text="get stars" @click="store.getStars" />
+        <InputButton text="show lines" @click="store.toggleLines" />
+      </div>
 
       <InputRange
         :value="store.zoomValue"
@@ -45,3 +48,11 @@ import useStore from '@/composables/useStore'
 
 const store = useStore()
 </script>
+
+<style>
+html,
+body {
+  font-family: '3270', 'Courier New', Courier, monospace;
+  font-weight: bold;
+}
+</style>

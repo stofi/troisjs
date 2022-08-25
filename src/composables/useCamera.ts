@@ -149,9 +149,9 @@ export default function useCamera() {
         const { N, RA, Dec, B, C, count } = star
 
         //start emoji
-        const name = `${N ? N : '*'}${count > 1 ? ` (${count})` : ''}\t\t:\t${
-          C ? C : ' '
-        }\t${B ? B : ' '}`
+        const name =
+          `${N ? N : '*'}${count > 1 ? ` (${count})` : ''}`.padEnd(20) +
+          `${C ? C : ' '}\t${B ? B : ' '}`
 
         return name
       })

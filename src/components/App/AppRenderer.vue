@@ -56,6 +56,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 import {
   BasicMaterial,
   Camera,
@@ -72,15 +74,18 @@ import {
 
 import AppStars from '@/components/App/AppStars.vue'
 import useRenderer from '@/composables/useRenderer'
+import useStore from '@/composables/useStore'
+
+const store = useStore()
 
 const { rendererRef, sceneRef, enableEffect, target, cameraRef, zoomValue } =
   useRenderer()
 
-const ringProps = {
+const ringProps = computed(() => ({
   innerRadius: 1,
   outerRadius: 1,
   thetaSegments: 1,
   phiSegments: 1,
-  visible: false,
-}
+  visible: store.showLines,
+}))
 </script>

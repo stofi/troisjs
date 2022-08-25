@@ -2,7 +2,9 @@ import fragment from './fragment.glsl?raw'
 import vertex from './vertex.glsl?raw'
 
 const BasicShader = {
-  uniforms: {},
+  uniforms: {
+    uTexture: { value: null },
+  },
   fragmentShader: fragment,
   vertexShader: vertex,
 }

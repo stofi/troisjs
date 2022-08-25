@@ -77,7 +77,6 @@ export default class Stars {
     const closest = this.stars.reduce(
       (acc, star) => {
         const distance = Stars.getArcDistance(point, star)
-        if (!star.N) return acc
 
         if (distance < acc.distance) {
           return {
