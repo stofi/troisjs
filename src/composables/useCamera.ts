@@ -9,7 +9,8 @@ import {
 import { Vector3 } from 'three'
 import { Camera } from 'troisjs'
 
-import Stars from '../Stars'
+import type { StarTransformed } from '@/Stars'
+import Stars from '@/Stars'
 
 export default function useCamera() {
   const cameraRef = ref<ComponentPublicInstance<typeof Camera>>()
@@ -62,21 +63,20 @@ export default function useCamera() {
 
   const stars = new Stars()
 
-  const hFov = computed(() => {
-    const aspect = window.innerWidth / window.innerHeight
-    const vFov = fov.value
-
-    return vFov / aspect
-  })
+  const fovVector = new Vector3(0, 0, -1)
 
   const setFov = () => {
     const cameraComponent = cameraRef.value
 
     if (!cameraComponent) return
     const camera = cameraComponent.camera
-    const v = fov.value
-    camera.fov = v
-    camera.updateProjectionMatrix()
+
+    const direction = camera.getWorldDirection(fovVector)
+
+    camera.fov = fov.value
+
+    // camera.rotation.set(0, 0, 0)
+
     setInput(focalLengthNormalized.value)
     onSetFov()
   }
@@ -109,7 +109,7 @@ export default function useCamera() {
   const onResize = () => {
     setFov()
   }
-  const starsText = ref('')
+  const starsTexts = ref<string[]>([])
 
   const texts = computed(() => {
     const fl = `Focal length: ${focalLength.value.toFixed(0)}mm`
@@ -118,31 +118,43 @@ export default function useCamera() {
     return [fl, fovx]
   })
   const vector = new Vector3(0, 0, -1)
+  let cameraDirection = vector.clone()
 
   const getStars = () => {
     const cameraComponent = cameraRef.value
     if (!cameraComponent) return
-    const direction = vector
-    const newV = cameraComponent.camera.getWorldDirection(direction)
-    // rotate newv by 90 degrees
-    newV.applyAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2)
 
-    const sph = Stars.cartesianToSpherical(newV)
-    const h = hFov.value
+    const aspect = window.innerWidth / window.innerHeight
     const v = fov.value
-    const region = stars.getStarsInRegion(newV, v, h, true)
-    const a = sph.ascention * (180 / Math.PI) + 90
-    const d = sph.declination * (180 / Math.PI)
-    console.log(h, v, a, d)
-    console.log(region)
+    const h = v / aspect
+    const region = stars.getStarsInRegion(cameraDirection, v, h, true)
+    const uniqueNames: string[] = []
 
-    starsText.value = region
+    starsTexts.value = region
+      .reduce((acc, starX) => {
+        const star = { ...starX }
+        if (!star || !star.N) return acc
+
+        if (uniqueNames.includes(star.N)) {
+          const saved = acc.find((s) => s.N === star.N)
+          if (saved) saved.count++
+
+          return acc
+        }
+        uniqueNames.push(star.N)
+
+        return [...acc, star]
+      }, [] as StarTransformed[])
       .map((star) => {
-        const { N, RA, Dec } = star
+        const { N, RA, Dec, B, C, count } = star
 
-        return `${N} ${RA} ${Dec}`
+        //start emoji
+        const name = `${N ? N : '*'}${count > 1 ? ` (${count})` : ''}\t\t:\t${
+          C ? C : ' '
+        }\t${B ? B : ' '}`
+
+        return name
       })
-      .join('\n')
   }
 
   onMounted(() => {
@@ -163,6 +175,14 @@ export default function useCamera() {
     window.removeEventListener('resize', onResize)
   })
 
+  const onBeforeRender = () => {
+    const cameraComponent = cameraRef.value
+    if (!cameraComponent) return
+    const direction = vector
+    cameraDirection = cameraComponent.camera.getWorldDirection(direction)
+    cameraDirection.applyAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2)
+  }
+
   return {
     cameraRef,
     focalLength,
@@ -172,15 +192,16 @@ export default function useCamera() {
     fov,
     focalLengthNormalized,
     zoomValue,
-    hFov,
+
     setFov,
     setFocalLenght,
     onScroll,
     onResize,
     stars,
-    starsText,
+    starsTexts,
     texts,
     setOnSetFov,
     getStars,
+    onBeforeRender,
   }
 }

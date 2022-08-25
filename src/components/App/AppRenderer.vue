@@ -13,6 +13,8 @@
       enablePan: false,
       rotateSpeed: 0.025,
       enableDamping: true,
+      autoRotate: true,
+      autoRotateSpeed: -0.005,
     }"
   >
     <Camera ref="cameraRef" :position="{ z: 0.001 }" />
@@ -29,29 +31,6 @@
       <FilmPass :noise-intensity="0.3" />
     </EffectComposer>
   </Renderer>
-  <!-- UI -->
-  <Teleport to="#teleport-header">
-    <div v-for="text in texts" :key="text">
-      {{ text }}
-    </div>
-    <div class="whitespace-pre-line">
-      {{ starsText }}
-    </div>
-  </Teleport>
-  <Teleport to="#teleport-footer">
-    <div class="flex items-center justify-center w-full h-full">
-      <!-- <button class="pointer-events-auto" @click="getStars">get stars</button> -->
-      <InputRange
-        :value="zoomValue"
-        label="Zoom"
-        class="w-full md:w-1/3"
-        :min="0"
-        :max="1"
-        :step="0.01"
-        @input="onInput"
-      />
-    </div>
-  </Teleport>
 </template>
 
 <script lang="ts" setup>
@@ -67,23 +46,8 @@ import {
 } from 'troisjs'
 
 import AppStars from '@/components/App/AppStars.vue'
-import InputRange from '@/components/Input/InputRange.vue'
 import useRenderer from '@/composables/useRenderer'
 
-const {
-  rendererRef,
-  sceneRef,
-  enableEffect,
-  renderer,
-  controls,
-  camera,
-  composer,
-  target,
-  cameraRef,
-  onInput,
-  zoomValue,
-  starsText,
-  texts,
-  getStars,
-} = useRenderer()
+const { rendererRef, sceneRef, enableEffect, target, cameraRef, zoomValue } =
+  useRenderer()
 </script>

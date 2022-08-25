@@ -7,6 +7,7 @@ import { Renderer, Scene } from 'troisjs'
 
 import useCamera from '@/composables/useCamera'
 import useScene from '@/composables/useScene'
+import useStore from '@/composables/useStore'
 
 const renderer = ref<THREE.WebGLRenderer>()
 const controls = ref<OrbitControls>()
@@ -15,6 +16,7 @@ const camera = ref<THREE.PerspectiveCamera>()
 const composer = ref<EC.EffectComposer>()
 
 export default function useRenderer() {
+  const store = useStore()
   const rendererRef = ref<ComponentPublicInstance<typeof Renderer>>()
 
   const enableEffect = ref(true)
@@ -26,10 +28,14 @@ export default function useRenderer() {
     cameraRef,
     onInput,
     zoomValue,
-    starsText,
+    starsTexts,
     texts,
     getStars,
+    onBeforeRender: cameraOnBeforeRender,
   } = useCamera()
+
+  store.getStars = getStars
+  store.onZoom = onInput
 
   onMounted(() => {
     const rendererComponent = rendererRef.value
@@ -40,17 +46,21 @@ export default function useRenderer() {
     composer.value = rendererComponent.three.composer as EC.EffectComposer
     scene.value = rendererComponent.scene as THREE.Scene
 
-    setOnSetFov(() => {
+    rendererComponent.onBeforeRender(() => {
+      const cameraComponent = cameraRef.value
+
+      if (!cameraComponent) return
       if (!controls.value) return
+      const camera = cameraComponent.camera
 
-      controls.value.update()
+      camera.updateProjectionMatrix()
+
+      cameraOnBeforeRender()
+
+      store.texts = texts.value
+      store.starsTexts = starsTexts.value
+      store.zoomValue = zoomValue.value
     })
-    // const offset = Math.PI / 360
-
-    // controls.value.maxPolarAngle = Math.PI / 2 + offset
-    // controls.value.minPolarAngle = Math.PI / 2 - offset
-    // controls.value.minAzimuthAngle = 2 * Math.PI - offset
-    // controls.value.maxAzimuthAngle = 2 * Math.PI + offset
 
     enableEffect.value = true
   })
@@ -67,7 +77,7 @@ export default function useRenderer() {
     cameraRef,
     onInput,
     zoomValue,
-    starsText,
+    starsTexts,
     texts,
     getStars,
   }

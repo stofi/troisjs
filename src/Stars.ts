@@ -2,19 +2,20 @@ import { Vector3 } from 'three'
 
 import stars from './stars.json'
 
-type Star = typeof stars[number]
+export type Star = typeof stars[number]
 
-type StarTransformed = Star & {
+export type StarTransformed = Star & {
   cartesian: Vector3
   phi: number
   theta: number
+  count: number
 }
 
-type StarInConstellation = StarTransformed & {
+export type StarInConstellation = StarTransformed & {
   C: string
 }
 
-type StarNamed = StarTransformed & {
+export type StarNamed = StarTransformed & {
   N: string
 }
 
@@ -36,38 +37,62 @@ export default class Stars {
 
   getStarsInRegion(
     direction: Vector3,
-    vFovDeg: number,
     hFovDeg: number,
+    vFovDeg: number,
     named = false
   ) {
     const spherical = Stars.cartesianToSpherical(direction)
     const hFovRad = (hFovDeg / 360) * 2 * Math.PI
     const vFovRad = (vFovDeg / 360) * 2 * Math.PI
 
-    const minAscention = spherical.ascention - hFovRad / 2
+    let minAscention = spherical.ascention - hFovRad // / 2
 
-    const maxAscention = spherical.ascention + hFovRad / 2
+    let maxAscention = spherical.ascention + hFovRad // / 2
 
-    const minDeclination = spherical.declination - vFovRad / 2
+    let minDeclination = spherical.declination - vFovRad // / 2
 
-    const maxDeclination = spherical.declination + vFovRad / 2
+    let maxDeclination = spherical.declination + vFovRad // / 2
+
+    if (minAscention > maxAscention) {
+      minAscention = minAscention - 2 * Math.PI
+      maxAscention = maxAscention - 2 * Math.PI
+    }
+
+    if (minDeclination > maxDeclination) {
+      minDeclination = minDeclination - 2 * Math.PI
+      maxDeclination = maxDeclination - 2 * Math.PI
+    }
+
     const arr = named ? this.namedStars : this.stars
 
-    return arr.filter(
-      (star) =>
-        (star.phi >= minAscention &&
-          star.phi <= maxAscention &&
-          star.theta >= minDeclination &&
-          star.theta <= maxDeclination) ||
-        (star.phi + 2 * Math.PI >= minAscention &&
-          star.phi + 2 * Math.PI <= maxAscention &&
-          star.theta >= minDeclination &&
-          star.theta <= maxDeclination) ||
-        (star.phi - 2 * Math.PI >= minAscention &&
-          star.phi - 2 * Math.PI <= maxAscention &&
-          star.theta >= minDeclination &&
-          star.theta <= maxDeclination)
-    )
+    // console.log({
+    //   hFovRad,
+    //   vFovRad,
+    //   minAscention,
+    //   maxAscention,
+    //   minDeclination,
+    //   maxDeclination,
+    //   _minAscention: Stars.angleToRightAscention(minAscention),
+    //   _maxAscention: Stars.angleToRightAscention(maxAscention),
+    //   _minDeclination: Stars.angleToDeclination(minDeclination),
+    //   _maxDeclination: Stars.angleToDeclination(maxDeclination),
+    // })
+
+    const compare = (star: StarTransformed) =>
+      (star.phi >= minAscention &&
+        star.phi <= maxAscention &&
+        star.theta >= minDeclination &&
+        star.theta <= maxDeclination) ||
+      (star.phi + 2 * Math.PI >= minAscention &&
+        star.phi + 2 * Math.PI <= maxAscention &&
+        star.theta >= minDeclination &&
+        star.theta <= maxDeclination) ||
+      (star.phi - 2 * Math.PI >= minAscention &&
+        star.phi - 2 * Math.PI <= maxAscention &&
+        star.theta >= minDeclination &&
+        star.theta <= maxDeclination)
+
+    return arr.filter(compare)
   }
 
   static getStars(): Star[] {
@@ -88,6 +113,7 @@ export default class Stars {
         cartesian,
         phi,
         theta,
+        count: 1,
       }
     })
   }
@@ -124,6 +150,21 @@ export default class Stars {
     return angle
   }
 
+  static angleToRightAscention(angle: number) {
+    const hours = Math.floor((angle * 12) / Math.PI)
+    const minutes = Math.floor(((angle * 12) / Math.PI - hours) * 60)
+
+    const seconds = Math.floor(
+      (((angle * 12) / Math.PI - hours) * 60 - minutes) * 60
+    )
+
+    const hoursString = `${hours}`.padStart(2, '0')
+    const minutesString = `${minutes}`.padStart(2, '0')
+    const secondsString = `${seconds}`.padStart(2, '0')
+
+    return `${hoursString}h ${minutesString}m ${secondsString}s`
+  }
+
   static declinationToAngle(declination: string) {
     const [degrees, minutes, seconds] = declination
       .split(' ')
@@ -136,6 +177,20 @@ export default class Stars {
       180
 
     return angle
+  }
+  static angleToDeclination(angle: number) {
+    const degrees = Math.floor((angle * 180) / Math.PI)
+    const minutes = Math.floor(((angle * 180) / Math.PI - degrees) * 60)
+
+    const seconds = Math.floor(
+      (((angle * 180) / Math.PI - degrees) * 60 - minutes) * 60
+    )
+    const sign = degrees < 0 ? '-' : '+'
+    const degreesString = `${Math.abs(degrees)}`.padStart(2, '0')
+    const minutesString = `${minutes}`.padStart(2, '0')
+    const secondsString = `${seconds}`.padStart(2, '0')
+
+    return `${sign}${degreesString}° ${minutesString}′ ${secondsString}″`
   }
 
   static sphericalToCartesian(
@@ -161,7 +216,7 @@ export default class Stars {
     ascention = ascention < -Math.PI ? -Math.PI : ascention
     ascention = ascention > Math.PI ? Math.PI : ascention
 
-    // declination is in the range of 0 to π
+    // declination is in the range of -π/2 to π/2
     declination = declination < -Math.PI / 2 ? -Math.PI / 2 : declination
     declination = declination > Math.PI / 2 ? Math.PI / 2 : declination
 
