@@ -44,7 +44,9 @@
         :position="{ x: 0, y: -0.75, z: 20 }"
         :rotation="{ x: 0, y: Math.PI, z: 0 }"
       >
-        <ShaderMaterial :props="{ ...StarLabel, side: 2 }"></ShaderMaterial>
+        <ShaderMaterial
+          :props="{ ...StarLabel, side: 2, transparent: true }"
+        ></ShaderMaterial>
       </Plane>
     </Group>
   </Group>

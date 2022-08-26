@@ -54,8 +54,8 @@ export default class Stars {
     named = false
   ) {
     const spherical = Stars.cartesianToSpherical(direction)
-    const hFovRad = (hFovDeg / 360) * 2 * Math.PI
-    const vFovRad = (vFovDeg / 360) * 2 * Math.PI
+    const hFovRad = (hFovDeg / 180) * 2 * Math.PI
+    const vFovRad = (vFovDeg / 180) * 2 * Math.PI
 
     const arr = named ? this.namedStars : this.stars
 
