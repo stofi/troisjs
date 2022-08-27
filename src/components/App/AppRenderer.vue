@@ -15,36 +15,41 @@
       enableDamping: true,
     }"
   >
-    <Camera ref="cameraRef" :position="{ z: 0.001 }" />
+    <Camera ref="cameraRef" :position="{ x: -0.001 }" />
 
     <Scene ref="sceneRef">
-      <DirectionalLight :target="target" :intensity="0.4" />
-      <slot />
-
-      <AppStars :size="3" :constellation-opacity="zoomValue" />
-      <Ring v-bind="ringProps" :rotation="{ y: Math.PI / 2 }">
-        <BasicMaterial color="red" :props="{ wireframe: true }" />
-      </Ring>
-      <Ring v-bind="ringProps" :rotation="{}">
-        <BasicMaterial color="blue" :props="{ wireframe: true }" />
-      </Ring>
-      <Ring v-bind="ringProps" :rotation="{ x: Math.PI / 2 }">
-        <BasicMaterial color="green" :props="{ wireframe: true }" />
-      </Ring>
-      <Group
-        :rotation="{ y: -Math.PI / 9.2 + Math.PI + (123 / 180) * Math.PI }"
-      >
-        <Ring v-bind="ringProps" :rotation="{ x: (-28.91 / 180) * Math.PI }">
-          <BasicMaterial color="white" :props="{ wireframe: true }" />
-        </Ring>
-      </Group>
-      <Group>
-        <Ring
-          v-bind="ringProps"
-          :rotation="{ x: Math.PI / 2 + (23.4 / 180) * Math.PI }"
+      <Group :rotation="{ y: -store.sunRotation }">
+        <Group
+          :rotation="{ x: store.alignEcliptic ? -store.eclipticRotation.x : 0 }"
         >
-          <BasicMaterial color="yellow" :props="{ wireframe: true }" />
-        </Ring>
+          <slot />
+
+          <ObjectStars :size="3" :constellation-opacity="zoomValue" />
+          <Ring v-bind="ringProps" :rotation="{ y: Math.PI / 2 }">
+            <BasicMaterial color="red" :props="ringMaterial" />
+          </Ring>
+          <Ring v-bind="ringProps" :rotation="{}">
+            <BasicMaterial color="blue" :props="ringMaterial" />
+          </Ring>
+          <Ring v-bind="ringProps" :rotation="{ x: Math.PI / 2 }">
+            <BasicMaterial color="green" :props="ringMaterial" />
+          </Ring>
+          <Group
+            :rotation="{ y: -Math.PI / 9.2 + Math.PI + (123 / 180) * Math.PI }"
+          >
+            <Ring
+              v-bind="ringProps"
+              :rotation="{ x: (-28.91 / 180) * Math.PI }"
+            >
+              <BasicMaterial color="white" :props="ringMaterial" />
+            </Ring>
+          </Group>
+          <Group :rotation="store.eclipticRotation">
+            <Ring v-bind="ringProps" :rotation="{ x: Math.PI / 2 }">
+              <BasicMaterial color="yellow" :props="ringMaterial" />
+            </Ring>
+          </Group>
+        </Group>
       </Group>
     </Scene>
     <EffectComposer v-if="enableEffect">
@@ -72,7 +77,7 @@ import {
   UnrealBloomPass,
 } from 'troisjs'
 
-import AppStars from '@/components/App/AppStars.vue'
+import ObjectStars from '@/components/Object/ObjectStars.vue'
 import useRenderer from '@/composables/useRenderer'
 import useStore from '@/composables/useStore'
 
@@ -87,5 +92,12 @@ const ringProps = computed(() => ({
   thetaSegments: 1,
   phiSegments: 1,
   visible: store.showLines,
+}))
+
+const ringMaterial = computed(() => ({
+  wireframe: true,
+  side: 2,
+  transparent: true,
+  opacity: 0.01,
 }))
 </script>

@@ -45,6 +45,7 @@ export default function useRenderer() {
     camera.value = rendererComponent.three.camera as THREE.PerspectiveCamera
     composer.value = rendererComponent.three.composer as EC.EffectComposer
     scene.value = rendererComponent.scene as THREE.Scene
+    store.renderer = rendererComponent
 
     rendererComponent.onBeforeRender(() => {
       const cameraComponent = cameraRef.value

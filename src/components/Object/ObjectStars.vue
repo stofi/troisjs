@@ -12,14 +12,15 @@
     ></ShaderMaterial>
   </Points>
   <Sphere
+    v-if="store.showConstellations"
     ref="constellationRef"
     :radius="10"
     :scale="{ x: -1 }"
     :rotation="{ y: Math.PI }"
     :width-segments="256"
     :height-segments="256"
-    @click="onClick"
   >
+    <!-- @click="onClick" -->
     <ShaderMaterial
       :props="{ ...ConstellationShader, side: 2, transparent: true }"
     >
@@ -33,7 +34,6 @@
         :outer-radius="0.31"
         :position="{ x: 0, y: 0, z: 20 }"
         :theta-segments="64"
-        @click="onClick"
       >
         <BasicMaterial color="white" :props="{ side: 2 }"></BasicMaterial>
       </Ring>
@@ -67,6 +67,7 @@ import {
 } from 'troisjs'
 
 import useStars from '@/composables/useStars'
+import useStore from '@/composables/useStore'
 import ConstellationShader from '@/shaders/ConstellationShader'
 import StarLabel from '@/shaders/StarLabel'
 import StarShader from '@/shaders/StarShader'
@@ -74,6 +75,7 @@ import Stars from '@/Stars'
 import { map } from '@/utils'
 
 const stars = new Stars()
+const store = useStore()
 
 const props = defineProps({
   size: {
@@ -148,9 +150,10 @@ const onClick = (e: { intersect: Intersection }) => {
 
       // update texture
       texture.needsUpdate = true
+      showRing.value = true
     }
   }
 }
 
-const showRing = ref(true)
+const showRing = ref(false)
 </script>

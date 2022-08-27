@@ -15,7 +15,7 @@ import Stars from '@/Stars'
 export default function useCamera() {
   const cameraRef = ref<ComponentPublicInstance<typeof Camera>>()
 
-  const focalLength = ref(2200)
+  const focalLength = ref(200)
   const minFocalLength = ref(1)
   const maxFocalLength = ref(10000)
 

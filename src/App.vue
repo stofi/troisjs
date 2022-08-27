@@ -23,8 +23,14 @@
   <Teleport to="#teleport-footer">
     <div class="flex flex-col items-center justify-center w-full h-full gap-2">
       <div class="flex gap-2">
-        <InputButton text="get stars" @click="store.getStars" />
+        <!-- <InputButton text="get stars" @click="store.getStars" /> -->
         <InputButton text="show lines" @click="store.toggleLines" />
+        <InputButton text="track sun" @click="store.toggleTrackSun" />
+        <InputButton text="align ecliptic" @click="store.toggleAlignEcliptic" />
+        <InputButton
+          text="constellations"
+          @click="store.toggleConstellations"
+        />
       </div>
 
       <InputRange

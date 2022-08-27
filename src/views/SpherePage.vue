@@ -1,32 +1,27 @@
 <template>
-  <Sphere
-    ref="sphere"
-    :rotation="{ y: -Math.PI / 2 }"
-    :radius="1737.5"
-    :position="{ z: 384400 * -1 }"
-    :width-segments="256"
-    :height-segments="256"
+  <Box
+    :position="{ z: 1000 * -1 }"
+    :rotation="{ x: Math.PI / 3, y: Math.PI / 3, z: Math.PI / 3 }"
     @click="clicked"
   >
-    <StandardMaterial :props="{ displacementScale: 10 }">
-      <Texture src="/color.jpg" />
-      <Texture src="/bump.jpg" name="displacementMap" />
-    </StandardMaterial>
-  </Sphere>
+    <LambertMaterial />
+  </Box>
 </template>
 
 <script lang="ts" setup>
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import type { Intersection } from 'three'
-import { Sphere, StandardMaterial, Texture } from 'troisjs'
+import { Vector3 } from 'three'
+import { Box, Group, LambertMaterial } from 'troisjs'
 
 const router = useRouter()
+const boxes = ref(null)
 
 function clicked(e: { intersect: Intersection }) {
-  // console.log(e.intersect);
-  // router.push({
-  //   name: 'Home',
-  // });
+  router.push({
+    name: 'Home',
+  })
 }
 </script>
