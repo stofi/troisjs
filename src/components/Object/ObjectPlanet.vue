@@ -88,7 +88,7 @@ onMounted(() => {
 
       // context.font = 'bold 256px sans-serif'
 
-      context.font = 'bold 128px "3270-Regular"'
+      context.font = '96px monospace'
       context.textAlign = 'center'
       context.textBaseline = 'bottom'
       context.fillStyle = '#ffffff'

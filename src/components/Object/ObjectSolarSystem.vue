@@ -54,11 +54,12 @@ onMounted(() => {
     const delta = (Date.now() - timestamp) / 1000
     timestamp = Date.now()
     const secondsPerFullRot = 3600
-    const increment = (delta / secondsPerFullRot) * Math.PI * 2
-    yRotation.value += increment
+    const increment = delta / secondsPerFullRot //* Math.PI * 2
+    store.time += increment * 31557600000
+    yRotation.value = store.getTime()
 
     planets.value.forEach((planet) => {
-      planet.orbitProgress += increment * planet.relativeYear
+      planet.orbitProgress = store.getTime() * planet.relativeYear
     })
 
     if (store.trackSun) {

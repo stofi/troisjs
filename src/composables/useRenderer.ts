@@ -58,7 +58,7 @@ export default function useRenderer() {
 
       cameraOnBeforeRender()
 
-      store.texts = texts.value
+      store.texts = [...texts.value, new Date(store.time).toLocaleString()]
       store.starsTexts = starsTexts.value
       store.zoomValue = zoomValue.value
     })
