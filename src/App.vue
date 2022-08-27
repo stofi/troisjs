@@ -62,7 +62,7 @@ const store = useStore()
 <style>
 html,
 body {
-  font-family: '3270', 'Courier New', Courier, monospace;
+  font-family: 'Retro Computer', 'Courier New', Courier, monospace;
   font-weight: bold;
 }
 </style>

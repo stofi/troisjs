@@ -11,7 +11,7 @@ fonts/3270/3270-Regular.woff
 */
 
 @font-face {
-  font-family: '3270';
+  font-family: 'Retro Computer';
   src: url('fonts/3270/3270-Regular.woff') format('woff'),
     url('fonts/3270/3270-Regular.ttf') format('truetype'),
     url('fonts/3270/3270-Regular.otf') format('opentype'),
