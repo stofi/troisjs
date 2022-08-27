@@ -28,6 +28,7 @@
         <InputButton text="track sun" @click="store.toggleTrackSun" />
         <InputButton text="align ecliptic" @click="store.toggleAlignEcliptic" />
         <InputButton text="100x planets" @click="store.toggleMassivePlanets" />
+        <InputButton text="time" @click="store.toggleStopTime" />
         <InputButton
           text="constellations"
           @click="store.toggleConstellations"

@@ -1,6 +1,6 @@
 <template>
   <Group :rotation="{ x: inclination }">
-    <Group :rotation="{ y: orbitProgress * Math.PI }">
+    <Group :rotation="{ y: (orbitProgress + yearOffset + 0.25) * 2 * Math.PI }">
       <Sphere
         ref="sphereRef"
         :radius="radius * (store.massivePlanets ? 100 : 1)"
@@ -157,6 +157,10 @@ const props = defineProps({
     default: 0,
   },
   inclination: {
+    type: Number,
+    default: 0,
+  },
+  yearOffset: {
     type: Number,
     default: 0,
   },

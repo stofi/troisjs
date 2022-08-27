@@ -41,6 +41,7 @@ interface Planet {
   orbitProgress: number
   relativeYear: number
   inclination: number
+  yearOffset: number
 }
 
 let timestamp = 0
@@ -55,11 +56,15 @@ onMounted(() => {
     timestamp = Date.now()
     const secondsPerFullRot = 3600
     const increment = delta / secondsPerFullRot //* Math.PI * 2
-    store.time += increment * 31557600000
-    yRotation.value = store.getTime()
+
+    if (!store.stopTime) {
+      store.time += increment * 31557600000
+    }
+
+    yRotation.value = store.getTime() * 2 * Math.PI
 
     planets.value.forEach((planet) => {
-      planet.orbitProgress = store.getTime() * planet.relativeYear
+      planet.orbitProgress = 1 * store.getTime() * planet.relativeYear
     })
 
     if (store.trackSun) {
@@ -77,6 +82,7 @@ const planets = ref<Planet[]>([
     color: '#60514f',
     relativeYear: 365 / 88,
     inclination: (7 * Math.PI) / 180,
+    yearOffset: 3 / 8,
   },
   {
     orbitProgress: 0,
@@ -86,6 +92,7 @@ const planets = ref<Planet[]>([
     color: '#d9b611',
     relativeYear: 365 / 225,
     inclination: (3.4 * Math.PI) / 180,
+    yearOffset: 7 / 32,
   },
   // {
   //   orbitProgress: 0,
@@ -95,6 +102,7 @@ const planets = ref<Planet[]>([
   //   color: '#3dc2ff',
   //   relativeYear: 1,
   //   inclination: 0,
+  // yearOffset: 0,
   // },
   {
     orbitProgress: 0,
@@ -104,6 +112,7 @@ const planets = ref<Planet[]>([
     color: '#cc0000',
     relativeYear: 365 / 687,
     inclination: (1.85 * Math.PI) / 180,
+    yearOffset: 23 / 32,
   },
   {
     orbitProgress: 0,
@@ -113,6 +122,7 @@ const planets = ref<Planet[]>([
     color: '#d5cda1',
     relativeYear: 365 / 4332,
     inclination: (1.3 * Math.PI) / 180,
+    yearOffset: 7 / 8,
   },
   {
     orbitProgress: 0,
@@ -122,6 +132,7 @@ const planets = ref<Planet[]>([
     color: '#c29f4a',
     relativeYear: 365 / 10756,
     inclination: (2.48 * Math.PI) / 180,
+    yearOffset: 7 / 8,
   },
   {
     orbitProgress: 0,
@@ -131,6 +142,7 @@ const planets = ref<Planet[]>([
     color: '#41bfec',
     relativeYear: 365 / 30687,
     inclination: (0.77 * Math.PI) / 180,
+    yearOffset: 5 / 8,
   },
   {
     orbitProgress: 0,
@@ -140,6 +152,7 @@ const planets = ref<Planet[]>([
     color: '#1574b8',
     relativeYear: 365 / 60190,
     inclination: (1.77 * Math.PI) / 180,
+    yearOffset: 5 / 8,
   },
   {
     orbitProgress: 0,
@@ -149,6 +162,7 @@ const planets = ref<Planet[]>([
     color: '#6e6e6e',
     relativeYear: 365 / 90560,
     inclination: (17.2 * Math.PI) / 180,
+    yearOffset: 5 / 12,
   },
 ])
 </script>
