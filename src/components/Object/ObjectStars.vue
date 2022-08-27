@@ -137,7 +137,7 @@ const onClick = (e: { intersect: Intersection }) => {
       context.textAlign = 'center'
       context.textBaseline = 'top'
       context.textAlign = 'left'
-      context.font = '32px "Retro Computer"'
+      context.font = '32px "3270-Regular"'
       context.fillText('Star:', 0, 0)
       context.fillText('Constellation:', 0, 35)
       context.fillText('Ascention:', 0, 75)

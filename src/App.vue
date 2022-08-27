@@ -27,10 +27,7 @@
         <InputButton text="show lines" @click="store.toggleLines" />
         <InputButton text="track sun" @click="store.toggleTrackSun" />
         <InputButton text="align ecliptic" @click="store.toggleAlignEcliptic" />
-        <InputButton
-          text="unrealistic planets"
-          @click="store.toggleMassivePlanets"
-        />
+        <InputButton text="100x planets" @click="store.toggleMassivePlanets" />
         <InputButton
           text="constellations"
           @click="store.toggleConstellations"
@@ -62,7 +59,7 @@ const store = useStore()
 <style>
 html,
 body {
-  font-family: 'Retro Computer', 'Courier New', Courier, monospace;
+  font-family: '3270-Regular', 'Courier New', Courier, monospace;
   font-weight: bold;
 }
 </style>

@@ -31,7 +31,7 @@ const store = reactive<Store>({
   zoomValue: 1,
   showLines: false,
   sunRotation: 0,
-  massivePlanets: true,
+  massivePlanets: false,
   showConstellations: true,
   trackSun: true,
   alignEcliptic: true,

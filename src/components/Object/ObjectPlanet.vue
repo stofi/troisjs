@@ -11,7 +11,7 @@
         <StandardMaterial
           :color="color"
           :props="{
-            roughness: 0.4,
+            roughness: 0.8,
           }"
         >
         </StandardMaterial>
@@ -88,7 +88,7 @@ onMounted(() => {
 
       // context.font = 'bold 256px sans-serif'
 
-      context.font = 'bold 128px "Retro Computer"'
+      context.font = 'bold 128px "3270-Regular"'
       context.textAlign = 'center'
       context.textBaseline = 'bottom'
       context.fillStyle = '#ffffff'
