@@ -53,7 +53,7 @@ onMounted(() => {
   renderer.onBeforeRender(() => {
     const delta = (Date.now() - timestamp) / 1000
     timestamp = Date.now()
-    const secondsPerFullRot = 60
+    const secondsPerFullRot = 3600
     const increment = (delta / secondsPerFullRot) * Math.PI * 2
     yRotation.value += increment
 
